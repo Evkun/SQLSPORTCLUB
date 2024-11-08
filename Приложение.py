@@ -1,9 +1,9 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 import mysql.connector
 
-# Функция для получения ФИО клиента по ID
-def get_client_fio():
+# Функция для получения ФИО клиентов по ID зала
+def get_clients_fio():
     client_id = entry_id.get()
     
     try:
@@ -16,7 +16,7 @@ def get_client_fio():
         )
         cursor = connection.cursor()
         
-        # Выполняем запрос для получения ФИО клиента по ID
+        # Выполняем запрос для получения ФИО клиентов по ID зала
         cursor.execute("""
             SELECT c.Name, c.SurName, c.Otchestvo
             FROM persanal_data c
@@ -24,13 +24,18 @@ def get_client_fio():
             WHERE h.iD = %s
         """, (client_id,))
         
-        result = cursor.fetchone()
+        results = cursor.fetchall()
         
-        if result:
-            full_name = f"{result[0]} {result[1]} {result[2]}"
-            label_result.config(text=full_name)
+        # Очищаем предыдущие данные из таблицы
+        for row in tree.get_children():
+            tree.delete(row)
+        
+        if results:
+            # Заполняем таблицу новыми данными
+            for result in results:
+                tree.insert("", tk.END, values=result)
         else:
-            messagebox.showerror("Ошибка", "Клиент не найден.")
+            messagebox.showerror("Ошибка", "Клиенты не найдены.")
         
     except mysql.connector.Error as e:
         messagebox.showerror("Ошибка", f"Ошибка базы данных: {e}")
@@ -40,22 +45,31 @@ def get_client_fio():
 
 # Создание основного окна
 root = tk.Tk()
-root.title("Поиск клиента")
+root.title("Поиск клиентов")
 
-# Метка и поле ввода для ID клиента
+# Метка и поле ввода для ID зала
 label_id = tk.Label(root, text="Введите ID зала:")
 label_id.pack(pady=10)
 
 entry_id = tk.Entry(root)
 entry_id.pack(pady=10)
 
-# Кнопка для поиска клиента
-button_search = tk.Button(root, text="Найти", command=get_client_fio)
+# Кнопка для поиска клиентов
+button_search = tk.Button(root, text="Найти", command=get_clients_fio)
 button_search.pack(pady=10)
 
-# Метка для вывода результата
-label_result = tk.Label(root, text="")
-label_result.pack(pady=10)
+# Создание таблицы для отображения результатов
+columns = ("Имя", "Фамилия", "Отчество")
+tree = ttk.Treeview(root, columns=columns, show='headings')
+tree.heading("Имя", text="Имя")
+tree.heading("Фамилия", text="Фамилия")
+tree.heading("Отчество", text="Отчество")
+tree.pack(pady=10)
+
+# Установка ширины колонок
+tree.column("Имя", width=100)
+tree.column("Фамилия", width=100)
+tree.column("Отчество", width=100)
 
 # Запуск главного цикла приложения
 root.mainloop()
