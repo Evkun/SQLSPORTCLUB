@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import mysql.connector
 import subprocess
+from tkinter import messagebox
 def open_app2():
     subprocess.Popen(['python', 'C://Users//Евгений//Desktop//+Client.py'])
 
@@ -10,7 +11,7 @@ class GymApp:
         self.root = root
         self.root.title("Gym Client Management")
         self.root.configure(bg="#f0f0f0")
-
+        
         open_button = tk.Button(root, text="Добавить или удалить клиента", command=open_app2, bg="#4CAF50", fg="white")
         open_button.pack(pady=20)
 
@@ -22,6 +23,9 @@ class GymApp:
 
         self.frame_update = tk.Frame(root, bg="#ffffff", bd=5, relief=tk.GROOVE)
         self.frame_update.pack(pady=10, padx=20)
+        
+        self.frame_spisanie = tk.Frame(root, bg="#ffffff", bd=5, relief=tk.GROOVE)
+        self.frame_spisanie.pack(pady=10, padx=20)
 
         tk.Label(self.frame_search, text="ID зала:", bg="#ffffff").grid(row=0, column=0)
         self.entry_id = tk.Entry(self.frame_search)
@@ -63,16 +67,135 @@ class GymApp:
 
         self.label_update_status = tk.Label(self.frame_update, text="", bg="#ffffff")
         self.label_update_status.grid(row=3, columnspan=2)
+        
+        tk.Label(self.frame_spisanie, text="ID клиента:", bg="#ffffff").grid(row=0, column=0)
+        self.entry_frame_spisanie = tk.Entry(self.frame_spisanie)
+        self.entry_frame_spisanie.grid(row=0, column=1)
+        self.button1 = tk.Button(self.frame_spisanie, text="Покупка одного занятия", command=self.Spisanie1,bg="#4CAF50", fg="white")
+        self.button1.grid (row=1, column=1)  
+        self.button2 = tk.Button(self.frame_spisanie, text="Покупка абонемента на месяц", command=self.Spisanie2,bg="#B8860B", fg="white")
+        self.button2.grid (row=1, column=2)
+        self.button3 = tk.Button(self.frame_spisanie, text="Покупка абонемента на год", command=self.Spisanie3,bg="Red", fg="white")
+        self.button3.grid (row=1, column=3)
+        self.label_spisanie_status= tk.Label(self.frame_spisanie, text="", bg="#ffffff")
+        self.label_spisanie_status.grid(row=3, columnspan=2)
+    def Spisanie1(self):
+        client_id=self.entry_frame_spisanie.get()
+        try:
+            connection = mysql.connector.connect(
+                host='127.0.0.1',
+                user='root',
+                password='7895123evg',
+                database='gymsport'
+            )
+            cursor = connection.cursor()
+            cursor.execute("""
+            UPDATE persanal_data
+            SET schet = 
+                
+                CASE 
+                    WHEN ID_ZAla =1 THEN schet-1500
+                    WHEN ID_ZAla =2 THEN schet-1000
+                    WHEN ID_ZAla =3 THEN schet-500
+                    WHEN ID_ZAla =4 THEN schet-800
+                    ELSE schet
+                END
+            WHERE ID = %s
+            """, ([client_id]))
+            connection.commit()
+            
+            if cursor.rowcount > 0:
+                self.label_spisanie_status.config(text="Счет успешно обновлен.")
+            else:
+                self.label_spisanie_status.config(text="Клиент не найден.")
+        except Exception as e:
+            print(f"Произошла ошибка: {e}")
+        except mysql.connector.Error as e:
+            self.label_no_results.config(text=f"Ошибка базы данных: {e}")
+        
+        finally:
+            if connection:
+                connection.close()
+        
+    def Spisanie2(self):
+        client_id=self.entry_frame_spisanie.get()
+        try:
+            connection = mysql.connector.connect(
+                host='127.0.0.1',
+                user='root',
+                password='7895123evg',
+                database='gymsport'
+            )
+            cursor = connection.cursor()
+            cursor.execute("""
+            UPDATE persanal_data
+            SET schet = 
+                
+                CASE 
+                    WHEN ID_ZAla =1 THEN schet-10000
+                    WHEN ID_ZAla =2 THEN schet-8000
+                    WHEN ID_ZAla =3 THEN schet-3500
+                    WHEN ID_ZAla =4 THEN schet-6500
+                    ELSE schet
+                END
+            WHERE ID = %s
+            """, ([client_id]))
+            connection.commit()
+            
+            if cursor.rowcount > 0:
+                self.label_spisanie_status.config(text="Счет успешно обновлен.")
+            else:
+                self.label_spisanie_status.config(text="Клиент не найден.")
+        except Exception as e:
+            print(f"Произошла ошибка: {e}")
+        except mysql.connector.Error as e:
+            self.label_no_results.config(text=f"Ошибка базы данных: {e}")
+        
+        finally:
+            if connection:
+                connection.close()
+        
 
-    def get_clients_fio(self):
-        messagebox.showinfo("Информация", "Поиск клиентов по ID зала.")
-
-    def get_client_balance(self):
-        messagebox.showinfo("Информация", "Получение баланса клиента.")
-
-    def update_client_balance(self):
-        messagebox.showinfo("Информация", "Баланс клиента обновлен.")
-
+    def Spisanie3(self):
+        client_id=self.entry_frame_spisanie.get()
+        try:
+            connection = mysql.connector.connect(
+                host='127.0.0.1',
+                user='root',
+                password='7895123evg',
+                database='gymsport'
+            )
+            cursor = connection.cursor()
+            cursor.execute("""
+            UPDATE persanal_data
+            SET schet = 
+                
+                CASE 
+                    WHEN ID_ZAla =1 THEN schet-21000
+                    WHEN ID_ZAla =2 THEN schet-16000
+                    WHEN ID_ZAla =3 THEN schet-10000
+                    WHEN ID_ZAla =4 THEN schet-14000
+                    ELSE schet
+                END
+            WHERE ID = %s
+            """, ([client_id]))
+            connection.commit()
+            
+            if cursor.rowcount > 0:
+                self.label_spisanie_status.config(text="Счет успешно обновлен.")
+            else:
+                self.label_spisanie_status.config(text="Клиент не найден.")
+        except Exception as e:
+            print(f"Произошла ошибка: {e}")
+        except mysql.connector.Error as e:
+            self.label_no_results.config(text=f"Ошибка базы данных: {e}")
+        
+        finally:
+            if connection:
+                connection.close()
+             
+    
+    
        
 
     def get_clients_fio(self):
@@ -92,7 +215,7 @@ class GymApp:
                 FROM persanal_data c
                 INNER JOIN Sport h ON c.ID_ZAla = h.iD
                 WHERE h.iD = %s
-            """, (client_id,))
+            """, ([client_id]))
             
             results = cursor.fetchall()
             
@@ -190,6 +313,7 @@ class GymApp:
         finally:
             if connection:
                 connection.close()
+        
 
 if __name__ == "__main__":
     root = tk.Tk()

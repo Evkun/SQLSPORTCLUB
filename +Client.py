@@ -4,6 +4,7 @@ import mysql.connector
 from mysql.connector import Error
 import subprocess
 
+
 class DatabaseApp:
     def __init__(self, master):
         self.master = master
@@ -52,10 +53,8 @@ class DatabaseApp:
         self.entry_delete_id = tk.Entry(self.master)
         self.entry_delete_id.pack(pady=(0, 10))
 
-        # Кнопка для удаления клиента
-        delete_button = tk.Button(self.master, text="Удалить клиента", command=self.delete_data, bg="#f44336", fg="white")
-        delete_button.pack(pady=(0, 20))
-
+        
+    
     def generate_client_id(self):
         new_id = 1  # Пример значения
         self.IDNew.config(state='normal')
@@ -95,6 +94,7 @@ class DatabaseApp:
                 cursor.execute("SELECT MAX(ID) FROM persanal_data")  
                 max_id = cursor.fetchone()[0]
                 new_id = max_id + 1 if max_id is not None else 1  
+                
                 self.IDNew.config(state='normal')  
                 self.IDNew.delete(0, tk.END)   
                 self.IDNew.insert(0, new_id) 
@@ -177,6 +177,11 @@ class DatabaseApp:
             finally:
                 cursor.close()
                 connection.close()
+        self.master.destroy()  # Закрывает текущее окно
+        new_root = tk.Tk()   # Создает новое окно
+        app = DatabaseApp(new_root)  # Инициализирует новое приложение
+        new_root.mainloop()   # Запускает главный цикл  
+ 
 if __name__ == "__main__":
     root = tk.Tk()
     app = DatabaseApp(root)
